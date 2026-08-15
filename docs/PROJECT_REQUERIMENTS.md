@@ -91,13 +91,13 @@ The project is divided into **three main phases**, prioritized as follows:
 
 ---
 
-## 2.4 Asynchronous Notification System — Kafka
+## 2.4 Asynchronous Notification System — RabbitMQ
 
 | ID       | Requirement               | Description                                                    | Acceptance Criteria                                                                                                                                                                                               |
 | -------- | ------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **R017** | Transfer Event Publishing | The transfer service publishes events to Kafka.                | - Configures the `transaction-events` topic<br>- Publishes an event after completing the transfer<br>- Event includes `transactionId`, `amount`, `sourceAccount`, `destinationAccount`, `timestamp`, and `userId` |
-| **R018** | Email Event Consumer      | A notification service consumes events and sends emails.       | - Subscribed to the `transaction-events` topic<br>- Sends an email containing transaction details<br>- Uses JavaMailSender or SendGrid API                                                                        |
-| **R019** | SMS Event Consumer        | A notification service consumes events and sends SMS messages. | - Subscribed to the `transaction-events` topic<br>- Sends an SMS containing a transaction summary<br>- Uses Twilio or a local SMS provider API                                                                    |
+| **R017** | Transfer Event Publishing | The transfer service publishes events to RabbitMQ.                | - Configures the `transaction-events` exchange<br>- Configures independent queues for email and SMS notifications<br>- Binds the queues to the exchange using routing keys<br>- Publishes an event after completing the transfer<br>- Event includes `transactionId`, `amount`, `sourceAccount`, `destinationAccount`, `timestamp`, and `userId` |
+| **R018** | Email Event Consumer      | A notification service consumes events and sends emails.       | - Subscribed to the email notification queue bound to the `transaction-events` exchange<br>- Sends an email containing transaction details<br>- Uses JavaMailSender or SendGrid API                                                                        |
+| **R019** | SMS Event Consumer        | A notification service consumes events and sends SMS messages. | - Subscribed to the SMS notification queue bound to the `transaction-events` exchange<br>- Sends an SMS containing a transaction summary<br>- Uses Twilio or a local SMS provider API                                                                    |
 | **R020** | Failure Retries           | Automatically handle notification failures.                    | - Configures a retry mechanism<br>- Uses a Dead Letter Queue (DLQ) for failed events<br>- Logs failed attempts                                                                                                    |
 
 ---
@@ -132,7 +132,7 @@ The project is divided into **three main phases**, prioritized as follows:
 | ID       | Requirement       | Description                                               | Acceptance Criteria                                                                                           |
 | -------- | ----------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | **R024** | Unit Tests        | Cover services and business logic.                        | - JUnit 5 + Mockito<br>- Minimum 70% coverage in the service layer<br>- Tests for success and error scenarios |
-| **R025** | Integration Tests | Test interactions with the database and other components. | - Testcontainers for PostgreSQL<br>- JPA repository tests<br>- Kafka integration tests using Embedded Kafka   |
+| **R025** | Integration Tests | Test interactions with the database and other components. | - Testcontainers for PostgreSQL<br>- JPA repository tests<br>- RabbitMQ integration tests using Testcontainers   |
 | **R026** | API Tests         | Test complete API endpoints.                              | - Spring Boot Test with `@WebMvcTest`<br>- MockMvc for simulating requests                                    |
 | **R027** | Load Testing      | Simulate multiple concurrent transfers.                   | - JMeter or Gatling<br>- Scenario: 100 simultaneous users<br>- **Optional**                                   |
 
@@ -143,7 +143,7 @@ The project is divided into **three main phases**, prioritized as follows:
 | ID       | Requirement                  | Description                                  | Acceptance Criteria                                                                                                                           |
 | -------- | ---------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | **R028** | Docker Containerization      | Create Docker images for all services.       | - Dockerfile for each service<br>- Optimized images using multi-stage builds                                                                  |
-| **R029** | Docker Compose Orchestration | Allow the entire system to run locally.      | - Services: application, PostgreSQL, Kafka, and Zookeeper<br>- Redis optional for caching<br>- Command: `docker-compose up`                   |
+| **R029** | Docker Compose Orchestration | Allow the entire system to run locally.      | - Services: application, PostgreSQL and RabbitMQ<br>- Redis optional for caching<br>- Command: `docker-compose up`                   |
 | **R030** | Configuration Profiles       | Separate configuration by environment.       | - `application-dev.yml`: local configuration, H2/PostgreSQL<br>- `application-prod.yml`: production configuration using environment variables |
 | **R031** | Centralized Logging          | Configure structured and consistent logging. | - Log4j2 or SLF4J with Logback<br>- Levels: `DEBUG`, `INFO`, `WARN`, `ERROR`<br>- Includes Correlation ID for traceability                    |
 
@@ -187,7 +187,7 @@ PHASE 2
 ├── R011       → Idempotency
 ├── R012–R014  → Beneficiaries
 ├── R015–R016  → Business Rules
-├── R017–R020  → Kafka + Notifications
+├── R017–R020  → RabbitMQ + Notifications
 └── R021–R022  → Additional Notifications
           │
           ▼
@@ -270,7 +270,7 @@ After completing all requirements, the system should provide:
 - Idempotency for financial operations.
 - Beneficiary management.
 - Transfer limits and business rules.
-- Asynchronous communication using Kafka.
+- Asynchronous communication using RabbitMQ.
 - Email and SMS notifications.
 - Centralized exception handling.
 - OpenAPI/Swagger documentation.
