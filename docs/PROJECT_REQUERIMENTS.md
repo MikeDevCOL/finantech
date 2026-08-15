@@ -1,20 +1,20 @@
-# 📋 Complete Project Requirements
+# Complete Project Requirements
 
-## 📌 Overview
+## Overview
 
 This document defines the functional, technical, security, testing, infrastructure, and deployment requirements for the system.
 
 The project is divided into **three main phases**, prioritized as follows:
 
-- 🟢 **MUST HAVE** — Essential functionality.
-- 🟡 **SHOULD HAVE** — Advanced functionality and improvements.
-- 🔴 **OPTIONAL / BONUS** — Additional recommended functionality.
+- **MUST HAVE** — Essential functionality.
+- **SHOULD HAVE** — Advanced functionality and improvements.
+- **OPTIONAL / BONUS** — Additional recommended functionality.
 
 ---
 
-# 🏗️ PHASE 1: SYSTEM FUNDAMENTALS
+# PHASE 1: SYSTEM FUNDAMENTALS
 
-**Priority:** 🟢 MUST HAVE
+**Priority:** MUST HAVE
 **Estimated duration:** 1.5 – 2 weeks
 
 ---
@@ -57,9 +57,9 @@ The project is divided into **three main phases**, prioritized as follows:
 
 ---
 
-# ⚡ PHASE 2: ADVANCED FUNCTIONALITY
+# PHASE 2: ADVANCED FUNCTIONALITY
 
-**Priority:** 🟡 SHOULD HAVE
+**Priority:** SHOULD HAVE
 **Estimated duration:** 2 – 2.5 weeks
 
 ---
@@ -111,9 +111,9 @@ The project is divided into **three main phases**, prioritized as follows:
 
 ---
 
-# 🔧 PHASE 3: QUALITY, DOCUMENTATION AND DEPLOYMENT
+# PHASE 3: QUALITY, DOCUMENTATION AND DEPLOYMENT
 
-**Priority:** 🟢 MUST HAVE / 🟡 SHOULD HAVE
+**Priority:** MUST HAVE / SHOULD HAVE
 **Estimated duration:** 1 – 1.5 weeks
 **Note:** This phase can be developed in parallel with the previous phases.
 
@@ -151,7 +151,7 @@ The project is divided into **three main phases**, prioritized as follows:
 
 ## 3.4 CI/CD
 
-**Priority:** 🟡 BONUS — Optional but recommended.
+**Priority:** BONUS — Optional but recommended.
 
 | ID       | Requirement                     | Description                             | Acceptance Criteria                                                                                            |
 | -------- | ------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
@@ -160,18 +160,18 @@ The project is divided into **three main phases**, prioritized as follows:
 
 ---
 
-# 📊 Priority Matrix
+# Priority Matrix
 
-| Priority                       | Phase                  | Requirements |
-| ------------------------------ | ---------------------- | ------------ |
-| 🟢 **MUST HAVE**               | System Fundamentals    | R001 – R010  |
-| 🟡 **SHOULD HAVE**             | Advanced Functionality | R011 – R022  |
-| 🟢 **MUST HAVE / SHOULD HAVE** | Quality and Deployment | R023 – R031  |
-| 🟡 **BONUS / OPTIONAL**        | CI/CD                  | R032 – R033  |
+| Priority                    | Phase                  | Requirements |
+| --------------------------- | ---------------------- | ------------ |
+| **MUST HAVE**               | System Fundamentals    | R001 – R010  |
+| **SHOULD HAVE**             | Advanced Functionality | R011 – R022  |
+| **MUST HAVE / SHOULD HAVE** | Quality and Deployment | R023 – R031  |
+| **BONUS / OPTIONAL**        | CI/CD                  | R032 – R033  |
 
 ---
 
-# 🗺️ Recommended Implementation Order
+# Recommended Implementation Order
 
 ```text
 PHASE 1
@@ -201,7 +201,7 @@ PHASE 3
 
 ---
 
-# 🔐 Git and Branching Rules
+# Git and Branching Rules
 
 To maintain a controlled deployment workflow, the recommended branch flow is:
 
@@ -259,7 +259,7 @@ hotfix/* ───────────► main ❌
 
 ---
 
-# 🎯 Final Goal
+# Final Goal
 
 After completing all requirements, the system should provide:
 
