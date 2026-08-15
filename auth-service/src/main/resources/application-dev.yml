@@ -4,9 +4,21 @@ spring:
     username: sa
     password:
 
+  sql:
+    init:
+      data-locations:
+        - classpath:db/seed/sql/data.sql
+
   jpa:
     hibernate:
       ddl-auto: validate
 
   flyway:
     enabled: true
+
+jwt:
+  issuer: ${JWT_ISSUER:?JWT_ISSUER environment variable is not set. Please set it in your environment or in the .dev.env file.}
+  secret-key: ${JWT_SECRET_KEY:?JWT_SECRET_KEY environment variable is not set. Please set it in your environment or in the .dev.env file.}
+  expiration:
+    access-token: ${JWT_ACCESS_TOKEN_EXPIRATION:1h}
+    refresh-token: ${JWT_REFRESH_TOKEN_EXPIRATION:24h}

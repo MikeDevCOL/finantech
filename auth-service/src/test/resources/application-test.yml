@@ -16,3 +16,10 @@ spring:
 
   flyway:
     enabled: true
+
+jwt:
+  issuer: test-issuer
+  secret-key: test-secret-key
+  expiration:
+    access-token: 1h
+    refresh-token: 24h

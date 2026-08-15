@@ -15,6 +15,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mikedevcol.auth_service.dto.request.UserRequest;
@@ -23,6 +24,7 @@ import com.mikedevcol.auth_service.models.User;
 import com.mikedevcol.auth_service.repository.RoleRepository;
 import com.mikedevcol.auth_service.repository.UserRepository;
 
+import jakarta.servlet.http.Cookie;
 import tools.jackson.databind.ObjectMapper;
 
 @SpringBootTest
@@ -139,5 +141,102 @@ class AuthControllerTest {
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(userRequest)))
 				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void shouldLoginSuccessfully() throws Exception {
+		// First, register a user
+		UserRequest userRequest = UserRequest.builder()
+				.username("admin")
+				.password("12345678901112")
+				.email("admin@example.com")
+				.build();
+
+		mockMvc.perform(post("/auth/login")
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(userRequest)))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.success").value(true));
+	}
+
+	@Test
+	void shouldReturnErrorForInvalidPassword() throws Exception {
+		UserRequest userRequest = UserRequest.builder()
+				.username("admin")
+				.password("wrongpassword")
+				.build();
+
+		mockMvc.perform(post("/auth/login")
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(userRequest)))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void shouldReturnErrorForInvalidUsername() throws Exception {
+		UserRequest userRequest = UserRequest.builder()
+				.username("nonexistentuser")
+				.password("12345678901112")
+				.build();
+
+		mockMvc.perform(post("/auth/login")
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(userRequest)))
+				.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void shouldSaveJwtTokensInCookies() throws Exception {
+		UserRequest userRequest = UserRequest.builder()
+				.username("admin")
+				.password("12345678901112")
+				.build();
+
+		MvcResult result = mockMvc.perform(post("/auth/login")
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(userRequest)))
+				.andExpect(status().isOk())
+				.andReturn();
+
+		Cookie[] cookies = result.getResponse().getCookies();
+
+		assertNotNull(cookies);
+		assertTrue(cookies.length > 0);
+
+		boolean hasAccessTokenCookie = false;
+		boolean hasRefreshTokenCookie = false;
+
+		for (Cookie cookie : cookies) {
+			if ("accessToken".equals(cookie.getName())) {
+				hasAccessTokenCookie = true;
+			} else if ("refreshToken".equals(cookie.getName())) {
+				hasRefreshTokenCookie = true;
+			}
+		}
+
+		assertTrue(hasAccessTokenCookie, "Access token cookie should be present");
+		assertTrue(hasRefreshTokenCookie, "Refresh token cookie should be present");
+	}
+
+	@Test
+	void shouldReturnErrorForActiveSession() throws Exception {
+		UserRequest userRequest = UserRequest.builder()
+				.username("admin")
+				.password("12345678901112")
+				.build();
+
+		MvcResult firstLoginResult = mockMvc.perform(post("/auth/login")
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(userRequest)))
+				.andExpect(status().isOk())
+				.andReturn();
+
+		Cookie[] cookies = firstLoginResult.getResponse().getCookies();
+
+		mockMvc.perform(post("/auth/login")
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(userRequest))
+				.cookie(cookies))
+				.andExpect(status().isConflict());
 	}
 }

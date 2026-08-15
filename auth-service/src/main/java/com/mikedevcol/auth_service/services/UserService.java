@@ -48,4 +48,9 @@ public class UserService {
     return userMapper.toResponse(userSaved);
   }
 
+  public User findByUsername(String username) throws DataNotFoundException {
+    return userRepository.findByUsername(username)
+        .orElseThrow(() -> new DataNotFoundException("User not found with username: " + username));
+  }
+
 }
