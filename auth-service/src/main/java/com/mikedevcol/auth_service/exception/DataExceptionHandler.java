@@ -37,4 +37,17 @@ public class DataExceptionHandler {
     return ResponseEntity.status(409).body(errorResponse);
   }
 
+  @ExceptionHandler(InvalidCredentialException.class)
+  public ResponseEntity<ErrorResponse> handleInvalidCredentialException(
+      InvalidCredentialException ex,
+      HttpServletRequest request) {
+    ErrorResponse errorResponse = ErrorResponse.builder()
+        .message(ex.getMessage())
+        .details("Invalid credentials")
+        .path(request.getRequestURI())
+        .timestamp(String.valueOf(System.currentTimeMillis()))
+        .build();
+    return ResponseEntity.status(401).body(errorResponse);
+  }
+
 }
