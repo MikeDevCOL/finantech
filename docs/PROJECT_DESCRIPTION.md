@@ -32,7 +32,7 @@
 ## 🛠️ Technologies Used
 
 ### Core
-- Java 17
+- Java 25
 - Spring Boot 3.x
 - Spring Security (JWT)
 - Spring Data JPA
